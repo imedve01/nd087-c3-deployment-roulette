@@ -23,15 +23,17 @@ spec:
             - containerPort: 9000
               protocol: TCP
           livenessProbe:
-            httpGet:
-              port: 9000
-              path: /nginx_status
-            initialDelaySeconds: 15
-            periodSeconds: 5
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - 'curl -s http://localhost:9000/nginx_status | grep -q "You want path: nginx_status"'
+              initialDelaySeconds: 30   
+              periodSeconds: 10         
+              timeoutSeconds: 5         
       nodeSelector:
         kubernetes.io/os: linux
       restartPolicy: Always
----
 apiVersion: v1
 kind: Service
 metadata:
